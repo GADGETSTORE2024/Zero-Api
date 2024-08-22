@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .menu {
+            cursor: pointer;
+            position: relative;
+        }
+        .menu div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+        }
+        .menu div span {
+            width: 4px;
+            height: 4px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            margin: 2px 0;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .dropdown a {
+            display: block;
+            padding: 10px 20px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .dropdown a:hover {
+            background-color: #444;
+        }
+        .profile-item {
+            margin-bottom: 15px;
+        }
+        .profile-item span {
+            display: block;
+            font-weight: bold;
+        }
+        .profile-item p {
+            margin: 5px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6200ea;
+            color: #fff;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar-heading">
+                Features
+        </div>
+         <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDownload" aria-expanded="true" aria-controls="collapseBootstrap">
+                    <i class="fa fa-fw fa-arrow-down"></i>
+                    <span>Downloader</span>
+                </a>
+        </li>
+        <div class="profile-item">
+            <span>Username: <%= username %></span>
+        </div>
+        <div class="profile-item">
+            <span>Email:</span>
+            <p>akundo979@gmail.com</p>
+        </div>
+        <div class="profile-item">
+            <span>Verify:</span>
+            <p>✔️</p>
+        </div>
+        <div class="profile-item">
+            <span>Apikey:</span>
+            <p>admin</p>
+        </div>
+        <div class="profile-item">
+            <span>Limit:</span>
+            <p>999999995</p>
+        </div>
+        <div class="profile-item">
+            <span>Premium:</span>
+            <p>✔️</p>
+        </div>
+        <div class="profile-item">
+            <span>Expired:</span>
+            <p>Thu Dec 31 2026 17:00:00 GMT+0000 (Coordinated Universal Time)</p>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="new-apikey">Change Apikey:</label>
+                <input type="text" id="new-apikey" name="new-apikey" placeholder="Enter new Apikey">
+            </div>
+            <div class="form-group">
+                <label for="promo-code">Promo Code:</label>
+                <input type="text" id="promo-code" name="promo-code" placeholder="Enter promo code for extra limit">
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

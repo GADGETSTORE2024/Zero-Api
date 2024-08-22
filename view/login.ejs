@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO API 😎</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(100% - 22px); /* Adjust for padding and border */
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        .recaptcha-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .link a:hover {
+            text-decoration: underline;
+        }
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+            }
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="login-container">
+        <img src="images/icon.png" alt="Logo" class="logo">
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+<div
+        style="margin: 0 auto"
+        class="col-12 col-md-6 col-lg-5 p-5 customborder"
+      >
+        <% if( error !="" ){ %>
+        <div
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <strong> Error </strong>
+          <%= error %>.
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        <% } %>
+
+
+        <% if( error_messages !="" ){ %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong> Error </strong>
+              <%= error_messages %>.
+          </div>
+          <% } %>
+
+          <% if( success_messages !="" ){ %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong> Success</strong>
+                <%= success_messages %>.
+            </div>
+            <% } %>
+            </div>
+            <div class="mb-3">
+                <label for="username">Enter Your Email</label>
+                <input
+                    type="email"
+                    class="form-control form-control-lg"
+                    name="email"
+                    id="username"
+                    autocomplete="off"
+                    placeholder="Email"
+                    required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="password">Enter Your Password</label>
+                <input
+                    type="password"
+                    class="form-control form-control-lg"
+                    name="password"
+                    id="password"
+                    autocomplete="off"
+                    placeholder="Password"
+                    required
+                />
+            </div>
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+            <div class="recaptcha-container">
+                <center> <%- recaptcha %> </center>
+            </div>
+            <button type="submit">Login</button>
+            <div class="link">
+                <a href="#" onclick="showSignup()">Don't have an account? Sign up</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="container" id="signup-container" style="display: none;">
+        <img src="images/icon.png" alt="Logo" class="logo">
+        <h2>Sign Up</h2>
+        <form>
+            <input type="email" placeholder="Email" required>
+            <input type="text" placeholder="Username" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Confirm Password" required>
+            <div class="recaptcha-container">
+                <center> <%- recaptcha %> </center>
+            </div>
+            <button type="submit">Sign Up</button>
+            <div class="link">
+                <a href="#" onclick="showLogin()">Already have an account? Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showSignup() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('signup-container').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('signup-container').style.display = 'none';
+            document.getElementById('login-container').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

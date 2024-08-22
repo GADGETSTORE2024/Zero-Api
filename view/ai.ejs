@@ -1,0 +1,536 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #444;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: #444;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+            margin: 10px;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #00bfff;
+            padding: 10px;
+            color: #fff;
+            position: relative;
+        }
+.menu {
+            font-size: 24px; /* Ukuran ikon menu */
+            cursor: pointer;
+        }
+        .menu-items {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            width: 200px; /* Lebar menu items */
+            padding: 10px;
+            z-index: 1;
+        }
+        .menu-items a {
+            display: block;
+            padding: 12px; /* Padding tambahan */
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap; /* Tidak memaksa jeda kata */
+        }
+        .menu-items a:hover {
+            background-color: #f5f5f5;
+        }
+        .history-items {
+            display: none;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .history-items a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+        .history-items a:hover {
+            background-color: #f5f5f5;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            display: flex;
+            align-items: flex-start;
+        }
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        .chat-message .message-content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .chat-message.user .message-content {
+            background-color: #00bfff;
+            color: #fff;
+        }
+        .chat-message.bot .message-content {
+            background-color: #006400;
+            color: #333;
+        }
+        .chat-message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+        .chat-input-container {
+            background-color: #444;
+            border-top: 1px solid #eee;
+            padding: 10px;
+        }
+        .chat-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+        #send-button {
+            background-color: #00bfff;
+            color: #fff;
+        }
+        #stop-button {
+            background-color: #ff6666;
+            color: #fff;
+            display: none;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+        .reset-button {
+            background-color: #00bfff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px 30px;
+            cursor: pointer;
+        }
+        .code-block {
+            position: relative;
+            background-color: #f5f5f5;
+            border-left: 4px solid #00bfff;
+            padding: 10px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-width: 100%;
+            overflow: auto;
+        }
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #00bfff;
+            border: none;
+            color: white;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        .recommended-prompts {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.prompt {
+    background-color: #00bfff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+.prompt:hover {
+    background-color: #00bfff;
+}
+
+#share-button {
+    background-color: #00bfff; /* Hijau sebagai contoh */
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    margin-left: 10px; /* Tambahkan jarak antara tombol */
+}
+
+.profile-icon {
+    width: 30px; /* Lebar gambar */
+    height: 30px; /* Tinggi gambar */
+    border-radius: 50%; /* Membuat gambar berbentuk lingkaran */
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+<div class="chat-header">
+    <div class="menu" onclick="toggleMenu()">☰</div>
+    ZannMods Ai Gpt
+    <!-- Ganti bekas tombol reset dengan gambar profil -->
+    <img src="logo.png" alt="Profil" class="profile-icon">
+
+
+            <div class="menu-items" id="menu-items">
+                <a href="https://wa.me/6288298793719">Kontak</a>
+                <a href="about.html">Tentang</a>
+                <a href="https://pastesos.vercel.com">Donasi</a>
+                <a href="#" onclick="toggleHistory()">Riwayat Pesan</a>
+                 <button class="reset-button" onclick="resetChat()">
+        <i class="fas fa-sync-alt"></i> Reset Chat
+    </button>
+                <div class="history-items" id="history-items"></div>
+            </div>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-container">
+           <div class="recommended-prompts" id="recommended-prompts">
+        <span class="prompt" onclick="insertPrompt('Hai, bagaimana kabarmu hari ini?')">Hai, bagaimana kabarmu hari ini?</span>
+        <span class="prompt" onclick="insertPrompt('Ceritakan tentang dirimu!')">Ceritakan tentang dirimu!</span>
+        <span class="prompt" onclick="insertPrompt('Berikan saya saran tentang produktivitas.')">Berikan saya saran tentang produktivitas.</span>
+    </div>
+<div class="chat-input">
+    <input type="text" id="user-input" placeholder="Ketik pesan Anda di sini...">
+    <button id="send-button" onclick="sendMessage()">➤</button>
+    <button id="stop-button" onclick="stopMessageGeneration()">🅞</button>
+    <button id="share-button" title="Bagikan URL" onclick="shareUrl()">📤</button>
+</div>
+            <div class="info-text">credit zannmods.</div>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+        let allChats = JSON.parse(localStorage.getItem('allChats')) || [];
+        let isGenerating = false;
+        let typingInterval = null;
+
+        function toggleMenu() {
+            const menuItems = document.getElementById('menu-items');
+            menuItems.style.display = menuItems.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleHistory() {
+            const historyItems = document.getElementById('history-items');
+            historyItems.style.display = historyItems.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function shareUrl() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Zannmods Chat Ai',
+            text: 'Kunjungi Dan chat dengan bebagai pertanyaan di ZANN AI GPT',
+            url: window.location.href
+        }).then(() => {
+            console.log('Berhasil berbagi URL ZannMods Ai');
+        }).catch((error) => {
+            console.error('Gagal berbagi URL:', error);
+        });
+    } else {
+        alert('Fitur berbagi tidak didukung oleh browser ini.');
+    }
+}
+
+        function resetChat() {
+            if (chatHistory.length > 0) {
+                allChats.push({ title: `Chat ${allChats.length + 1}`, history: chatHistory });
+                localStorage.setItem('allChats', JSON.stringify(allChats));
+            }
+            document.getElementById('chat-messages').innerHTML = '';
+            chatHistory = [];
+            loadChatHistory();
+        }
+
+        function loadChatHistory() {
+            const historyItems = document.getElementById('history-items');
+            historyItems.innerHTML = '';
+            allChats.forEach((chat, index) => {
+                const historyItem = document.createElement('a');
+                historyItem.href = '#';
+                historyItem.textContent = chat.title;
+                historyItem.onclick = () => loadChat(index);
+                historyItems.appendChild(historyItem);
+            });
+        }
+        
+        function insertPrompt(promptText) {
+    const userInput = document.getElementById('user-input');
+    userInput.value = promptText;
+    userInput.focus();
+}
+
+        function loadChat(index) {
+            const chat = allChats[index];
+            chatHistory = chat.history;
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '';
+            chat.history.forEach(message => {
+                addMessage(message.message, message.sender, false);
+            });
+        }
+        
+        function formatText(text) {
+    // Menghilangkan spasi ekstra di awal dan akhir teks
+    text = text.trim();
+    
+    // Menambahkan garis baru setiap 80 karakter untuk memotong teks panjang
+    const maxLineLength = 80;
+    let formattedText = '';
+    while (text.length > maxLineLength) {
+        let slice = text.slice(0, maxLineLength);
+        let lastSpace = slice.lastIndexOf(' ');
+        
+        if (lastSpace === -1) {
+            lastSpace = maxLineLength;
+        }
+        
+        formattedText += slice.slice(0, lastSpace) + '\n';
+        text = text.slice(lastSpace).trim();
+    }
+    
+    formattedText += text;
+    return formattedText;
+}
+
+// Contoh penggunaan:
+let botResponse = "Ini adalah contoh pesan bot yang sangat panjang dan perlu dipecah menjadi beberapa baris agar lebih mudah dibaca oleh pengguna.";
+let formattedResponse = formatText(botResponse);
+console.log(formattedResponse);
+
+        function addMessage(message, sender, isTyping = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message ' + sender;
+
+            const img = document.createElement('img');
+            img.src = sender === 'bot' ? 'https://telegra.ph/file/0d6e41883c3924c502e9d.jpg' : 'https://telegra.ph/file/6b59b7652808c71f91ef8.png';
+            img.alt = sender;
+
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = isTyping ? '' : message;
+
+            messageDiv.appendChild(img);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            if (isTyping) {
+                let index = 0;
+                typingInterval = setInterval(() => {
+                    if (index < message.length) {
+                        messageContent.textContent += message[index];
+                        index++;
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    } else {
+                        clearInterval(typingInterval);
+                        typingInterval = null;
+                        toggleButtons(false);
+                    }
+                }, 50);
+            } else if (sender === 'bot' && isCodeBlock(message)) {
+                const parts = splitCodeAndText(message);
+                parts.forEach(part => {
+                    if (part.isCode) {
+                        const codeBlock = document.createElement('div');
+                        codeBlock.className = 'code-block';
+                        codeBlock.textContent = part.content;
+
+                        const copyButton = document.createElement('button');
+                        copyButton.className = 'copy-button';
+                        copyButton.textContent = 'Salin';
+                        copyButton.onclick = () => copyToClipboard(part.content);
+
+                        codeBlock.appendChild(copyButton);
+                        messageContent.appendChild(codeBlock);
+                    } else {
+                        const textNode = document.createTextNode(part.content);
+                        messageContent.appendChild(textNode);
+                    }
+                });
+            }
+        }
+
+        function splitCodeAndText(message) {
+    const parts = [];
+    const regex = /(```[\s\S]*?```)/g;
+    let lastIndex = 0;
+    message.replace(regex, (match, p1, offset) => {
+        if (lastIndex < offset) {
+            parts.push({ isCode: false, content: message.slice(lastIndex, offset) });
+        }
+        parts.push({ isCode: true, content: match.replace(/```/g, '').trim() });
+        lastIndex = offset + match.length;
+    });
+    if (lastIndex < message.length) {
+        parts.push({ isCode: false, content: message.slice(lastIndex) });
+    }
+    return parts;
+}
+
+function addMessage(message, sender) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message ' + sender;
+
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+
+    const parts = splitCodeAndText(message);
+    parts.forEach(part => {
+        if (part.isCode) {
+            const codeBlock = document.createElement('div');
+            codeBlock.className = 'code-block';
+            codeBlock.textContent = part.content;
+
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.textContent = 'Salin';
+            copyButton.onclick = () => copyToClipboard(part.content);
+
+            codeBlock.appendChild(copyButton);
+            messageContent.appendChild(codeBlock);
+        } else {
+            const textNode = document.createTextNode(part.content);
+            messageContent.appendChild(textNode);
+        }
+    });
+
+    messageDiv.appendChild(messageContent);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Kode disalin ke clipboard');
+            }).catch(err => {
+                alert('Gagal menyalin kode');
+            });
+        }
+
+        function toggleButtons(isGenerating) {
+            const sendButton = document.getElementById('send-button');
+            const stopButton = document.getElementById('stop-button');
+
+            if (isGenerating) {
+                sendButton.style.display = 'none';
+                stopButton.style.display = 'block';
+            } else {
+                sendButton.style.display = 'block';
+                stopButton.style.display = 'none';
+            }
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            addMessage(message, 'user');
+            chatHistory.push({ sender: 'user', message: message });
+            userInput.value = '';
+
+            const historyText = chatHistory.map(item => `${item.sender}: ${item.message}`).join('\n');
+            isGenerating = true;
+            toggleButtons(true);
+
+            fetch(`https://apis-api.domaingratisan.xyz/api/ai/gpt-4?text=${encodeURIComponent(historyText)}&apikey=admin`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status && isGenerating) {
+                        addMessage(data.result, 'bot', true);
+                        chatHistory.push({ sender: 'bot', message: data.result });
+                    } else {
+                        addMessage('Error: Tidak bisa mendapatkan respons dari AI.', 'bot');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching AI response:', error);
+                    addMessage('Error: Tidak bisa terhubung ke server.', 'bot');
+                })
+                .finally(() => {
+                    isGenerating = false;
+                    toggleButtons(false);
+                });
+        }
+
+        function stopMessageGeneration() {
+            isGenerating = false;
+            clearInterval(typingInterval);
+            typingInterval = null;
+            toggleButtons(false);
+        }
+
+        window.onload = function() {
+            loadChatHistory();
+        }
+    </script>
+</body>
+</html>
